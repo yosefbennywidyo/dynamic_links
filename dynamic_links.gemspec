@@ -18,10 +18,10 @@ Gem::Specification.new do |spec|
   end
 
   spec.add_dependency 'rails', '>= 5'
-  spec.add_development_dependency 'nanoid', '~> 2.0'
-  spec.add_development_dependency 'redis', '>= 4'
+
   spec.add_development_dependency 'annotate'
   spec.add_development_dependency 'timecop'
   # add dotenv gem
   spec.add_development_dependency 'dotenv-rails'
+  spec.add_development_dependency 'ahoy_matey'
 end
