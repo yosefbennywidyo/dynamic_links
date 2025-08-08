@@ -52,15 +52,17 @@ module DynamicLinks
     end
   end
 
+  SHORTENER_METHODS = {
+    true => :shorten_async,
+    false => :shorten
+  }.freeze
+
   def self.shorten_url(url, client, async: DynamicLinks.configuration.async_processing)
     raise InvalidURIError, 'Invalid URL' unless Validator.valid_url?(url)
 
-    shortener = Shortener.new
-    if async
-      shortener.shorten_async(client, url)
-    else
-      shortener.shorten(client, url)
-    end
+    shortener       = Shortener.new
+    selected_method = SHORTENER_METHODS[async]
+    shortener.send(selected_method, client, url)
   end
 
   # mimic Firebase Dynamic Links API
