@@ -4,12 +4,12 @@ module DynamicLinks
   class StrategyFactory
     # Using a hash to map strategy names to their classes.
     STRATEGIES = {
-      md5: ShorteningStrategies::MD5,
-      sha256: ShorteningStrategies::SHA256,
-      crc32: ShorteningStrategies::CRC32,
-      nano_id: ShorteningStrategies::NanoID,
-      redis_counter: ShorteningStrategies::RedisCounter,
-      mock: ShorteningStrategies::Mock
+      md5: ShorteningStrategies::MD5Strategy,
+      sha256: ShorteningStrategies::SHA256Strategy,
+      crc32: ShorteningStrategies::CRC32Strategy,
+      nano_id: ShorteningStrategies::NanoIDStrategy,
+      redis_counter: ShorteningStrategies::RedisCounterStrategy,
+      mock: ShorteningStrategies::MockStrategy
     }.freeze
 
     def self.get_strategy(strategy_name)
