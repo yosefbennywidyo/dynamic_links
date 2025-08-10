@@ -29,13 +29,7 @@ require 'dynamic_links/redis_config'
 require 'dynamic_links/configuration'
 require 'dynamic_links/validator'
 require 'dynamic_links/strategy_factory'
-require 'dynamic_links/shortening_strategies/base_strategy'
-require 'dynamic_links/shortening_strategies/sha256_strategy'
-require 'dynamic_links/shortening_strategies/md5_strategy'
-require 'dynamic_links/shortening_strategies/crc32_strategy'
-require 'dynamic_links/shortening_strategies/nano_id_strategy'
-require 'dynamic_links/shortening_strategies/redis_counter_strategy'
-require 'dynamic_links/shortening_strategies/mock_strategy'
+require 'dynamic_links/constants'
 require 'dynamic_links/async/locker'
 require 'dynamic_links/shortener'
 
@@ -55,12 +49,9 @@ module DynamicLinks
   def self.shorten_url(url, client, async: DynamicLinks.configuration.async_processing)
     raise InvalidURIError, 'Invalid URL' unless Validator.valid_url?(url)
 
-    shortener = Shortener.new
-    if async
-      shortener.shorten_async(client, url)
-    else
-      shortener.shorten(client, url)
-    end
+    shortener       = Shortener.new
+    selected_method = DynamicLinks::Constants::SHORTENER_METHODS[async]
+    shortener.send(selected_method, client, url)
   end
 
   # mimic Firebase Dynamic Links API

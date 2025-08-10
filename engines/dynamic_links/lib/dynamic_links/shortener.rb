@@ -21,11 +21,9 @@ module DynamicLinks
     def shorten(client, url)
       short_url = strategy.shorten(url)
 
-      if strategy.always_growing?
-        storage.create!(client: client, url: url, short_url: short_url)
-      else
-        storage.find_or_create!(client, short_url, url)
-      end
+      storage_operation = Constants::STORAGE_OPERATIONS[strategy.always_growing?]
+      storage_operation.call(storage, client, url, short_url)
+
       URI::Generic.build({ scheme: client.scheme, host: client.hostname, path: "/#{short_url}" }).to_s
     rescue StandardError => e
       DynamicLinks::Logger.log_error("Error shortening URL: #{e.message}")

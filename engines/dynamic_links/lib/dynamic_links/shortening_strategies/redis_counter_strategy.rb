@@ -17,6 +17,18 @@ module DynamicLinks
       def initialize(redis_config = nil)
         super()
 
+        begin
+          require 'redis'
+        rescue LoadError
+          raise 'Missing dependencies: Please add "redis" to your Gemfile to use RedisCounterStrategy.'
+        end
+
+        begin
+          require 'connection_pool'
+        rescue LoadError
+          raise 'Missing dependencies: Please add "connection_pool" to your Gemfile to use RedisCounterStrategy.'
+        end
+
         configuration = redis_config.nil? ? DynamicLinks.configuration.redis_counter_config : DynamicLinks::Configuration::RedisConfig.new(redis_config)
         @redis = ConnectionPool.new(size: configuration.pool_size, timeout: configuration.pool_timeout) do
           Redis.new(configuration.config)
